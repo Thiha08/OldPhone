@@ -17,8 +17,6 @@
 
         void ProcessTimeout();
 
-        void ProcessComplete();
-
         void ProcessCleaning();
     }
 }

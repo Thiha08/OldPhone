@@ -25,6 +25,9 @@ namespace OldPhone.ConsoleApp.Services
             _pauseTimer.AutoReset = false;
         }
 
+        /// <summary>
+        /// Coding Challenge: Implement the OldPhonePad method to simulate the old phone keypad input.
+        /// </summary>
         public string OldPhonePad(string input)
         {
             for (int i = 0; i < input.Length; i++)
@@ -85,13 +88,6 @@ namespace OldPhone.ConsoleApp.Services
                 ResetCurrentKey();
                 TextChanged?.Invoke(CurrentText);
             }
-        }
-
-        public void ProcessComplete()
-        {
-            // This method can be used to finalize the current input
-            // For now, we'll just reset the current key state
-            ResetCurrentKey();
         }
 
         public void ProcessCleaning()
