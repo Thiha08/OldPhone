@@ -6,7 +6,10 @@
 
         event Action<string> TextChanged;
 
-        string Process(string input);
+        /// <summary>
+        /// Coding Challenge: Implement the OldPhonePad method to simulate the old phone keypad input.
+        /// </summary>
+        string OldPhonePad(string input);
 
         void ProcessKey(char key);
 

@@ -4,9 +4,10 @@ using Xunit;
 
 namespace OldPhone.Tests
 {
-    public class OldPhoneAppTests
+    public class OldPhonePadTests
     {
         [Theory]
+        [InlineData("222 2 22", "CAB")]
         [InlineData("33#", "E")]
         [InlineData("227*#", "B")]
         [InlineData("4433555 555666#", "HELLO")]
@@ -15,10 +16,9 @@ namespace OldPhone.Tests
         {
             // Arrange
             var keyService = new OldPhoneKeyService();
-            var app = new OldPhoneApp(keyService);
 
             // Act
-            var result = keyService.Process(input);
+            var result = keyService.OldPhonePad(input);
 
             // Assert
             Assert.Equal(expectedOutput, result);

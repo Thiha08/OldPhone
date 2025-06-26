@@ -83,7 +83,7 @@ namespace OldPhone.ConsoleApp
         {
             Console.WriteLine("Enter a string to process:");
             var input = Console.ReadLine() ?? string.Empty;
-            var output = _keyService.Process(input);
+            var output = _keyService.OldPhonePad(input);
             Console.WriteLine($"OldPhonePad(\"{input}\") => output: {output} \n\n");
             _keyService.ProcessCleaning();
             DisplayCommands();

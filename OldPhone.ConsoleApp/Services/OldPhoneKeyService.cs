@@ -24,7 +24,7 @@ namespace OldPhone.ConsoleApp.Services
             _pauseTimer.AutoReset = false;
         }
 
-        public string Process(string input)
+        public string OldPhonePad(string input)
         {
             for (int i = 0; i < input.Length; i++)
             {
