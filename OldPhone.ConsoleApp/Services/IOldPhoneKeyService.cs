@@ -1,8 +1,10 @@
-﻿namespace OldPhone.ConsoleApp
+﻿namespace OldPhone.ConsoleApp.Services
 {
-    public interface IOldPhoneKeyService
+    public interface IOldPhoneKeyService : IDisposable
     {
         string CurrentText { get; }
+
+        event Action<string> TextChanged;
 
         void ProcessKey(char key);
 
