@@ -41,6 +41,7 @@ namespace OldPhone.ConsoleApp
             Console.WriteLine("1-9/0: Input keys");
             Console.WriteLine("*: Backspace");
             Console.WriteLine("#: End input");
+            Console.WriteLine("O: OldPhonePad(string input) ");
             Console.WriteLine("Q: Quit");
             Console.WriteLine("**************************");
         }
@@ -56,12 +57,21 @@ namespace OldPhone.ConsoleApp
         {
             switch (key)
             {
+                case 'O':
+                    Console.WriteLine("Enter a string to process:");
+                    var input = Console.ReadLine() ?? string.Empty;
+                    var output = _keyService.Process(input);
+                    Console.WriteLine($"OldPhonePad(\"{input}\") => output: {output} \n\n");
+                    _keyService.ProcessCleaning();
+                     DisplayCommands();
+                    return false;
+
                 case '*':
                     _keyService.ProcessBackspace();
                     return false;
 
                 case '#':
-                    Console.WriteLine($"Final output: {_keyService.CurrentText}");
+                    Console.WriteLine($"Final output: {_keyService.CurrentText} \n\n");
                     _keyService.ProcessCleaning();
                     return false;
 

@@ -24,6 +24,34 @@ namespace OldPhone.ConsoleApp.Services
             _pauseTimer.AutoReset = false;
         }
 
+        public string Process(string input)
+        {
+            for (int i = 0; i < input.Length; i++)
+            {
+                char key = input[i];
+
+                switch (key)
+                {
+                    case '#':
+                        return _text;
+
+                    case '*':
+                        ProcessBackspace();
+                        break;
+
+                    case ' ':
+                        ProcessTimeout();
+                        break;
+
+                    default:
+                        ProcessKey(key);
+                        break;
+                }
+            }
+
+            return _text;
+        }
+
         public void ProcessKey(char key)
         {
             if (!_keyMap.ContainsKey(key))
@@ -48,6 +76,8 @@ namespace OldPhone.ConsoleApp.Services
             _pauseTimer.Start();
         }
 
+
+
         public void ProcessBackspace()
         {
             if (_text.Length > 0)
@@ -69,7 +99,6 @@ namespace OldPhone.ConsoleApp.Services
         {
             _text = "";
             ResetCurrentKey();
-            TextChanged?.Invoke(_text);
         }
 
         public void ProcessTimeout()

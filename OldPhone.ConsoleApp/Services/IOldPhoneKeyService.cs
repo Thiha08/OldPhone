@@ -6,6 +6,8 @@
 
         event Action<string> TextChanged;
 
+        string Process(string input);
+
         void ProcessKey(char key);
 
         void ProcessBackspace();
