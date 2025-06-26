@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Text;
 using System.Timers;
 using Timer = System.Timers.Timer;
 
@@ -10,16 +11,16 @@ namespace OldPhone.ConsoleApp.Services
         private readonly Timer _pauseTimer;
         private char _currentKey = '\0';
         private int _pressCount = 0;
-        private string _text = "";
+        private readonly StringBuilder _textBuilder = new StringBuilder();
         private bool _disposed = false;
 
         public event Action<string> TextChanged = delegate { };
-        public string CurrentText => _text;
+        public string CurrentText => _textBuilder.ToString();
 
         public OldPhoneKeyService()
         {
             _keyMap = KeyMap.GetDefaultKeyMap();
-            _pauseTimer = new Timer(1000); // pause for a second in order to type two characters  
+            _pauseTimer = new Timer(Constants.TIMER_INTERVAL_MS);
             _pauseTimer.Elapsed += OnTimedEvent;
             _pauseTimer.AutoReset = false;
         }
@@ -33,7 +34,7 @@ namespace OldPhone.ConsoleApp.Services
                 switch (key)
                 {
                     case '#':
-                        return _text;
+                        return CurrentText;
 
                     case '*':
                         ProcessBackspace();
@@ -49,7 +50,7 @@ namespace OldPhone.ConsoleApp.Services
                 }
             }
 
-            return _text;
+            return CurrentText;
         }
 
         public void ProcessKey(char key)
@@ -76,15 +77,13 @@ namespace OldPhone.ConsoleApp.Services
             _pauseTimer.Start();
         }
 
-
-
         public void ProcessBackspace()
         {
-            if (_text.Length > 0)
+            if (_textBuilder.Length > 0)
             {
-                _text = _text[..^1];
+                _textBuilder.Length--;
                 ResetCurrentKey();
-                TextChanged?.Invoke(_text);
+                TextChanged?.Invoke(CurrentText);
             }
         }
 
@@ -97,7 +96,7 @@ namespace OldPhone.ConsoleApp.Services
 
         public void ProcessCleaning()
         {
-            _text = "";
+            _textBuilder.Clear();
             ResetCurrentKey();
         }
 
@@ -110,16 +109,16 @@ namespace OldPhone.ConsoleApp.Services
 
         private void AddCharacter(char c)
         {
-            _text += c;
-            TextChanged?.Invoke(_text);
+            _textBuilder.Append(c);
+            TextChanged?.Invoke(CurrentText);
         }
 
         private void ReplaceLastCharacter(char c)
         {
-            if (_text.Length > 0)
+            if (_textBuilder.Length > 0)
             {
-                _text = _text[..^1] + c;
-                TextChanged?.Invoke(_text);
+                _textBuilder[^1] = c;
+                TextChanged?.Invoke(CurrentText);
             }
         }
 

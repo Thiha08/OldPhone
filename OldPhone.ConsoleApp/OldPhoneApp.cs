@@ -37,13 +37,13 @@ namespace OldPhone.ConsoleApp
 
         private static void DisplayCommands()
         {
-            Console.WriteLine("*** Available Commands ***");
+            Console.WriteLine("*** Available Commands ***\n");
             Console.WriteLine("1-9/0: Input keys");
             Console.WriteLine("*: Backspace");
             Console.WriteLine("#: End input");
             Console.WriteLine("O: OldPhonePad(string input) ");
             Console.WriteLine("Q: Quit");
-            Console.WriteLine("**************************");
+            Console.WriteLine("\n**************************\n");
         }
 
         private static char GetUserInput()
