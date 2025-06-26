@@ -58,12 +58,7 @@ namespace OldPhone.ConsoleApp
             switch (key)
             {
                 case 'O':
-                    Console.WriteLine("Enter a string to process:");
-                    var input = Console.ReadLine() ?? string.Empty;
-                    var output = _keyService.Process(input);
-                    Console.WriteLine($"OldPhonePad(\"{input}\") => output: {output} \n\n");
-                    _keyService.ProcessCleaning();
-                     DisplayCommands();
+                    ProcessOldPhonePadInput();
                     return false;
 
                 case '*':
@@ -71,8 +66,7 @@ namespace OldPhone.ConsoleApp
                     return false;
 
                 case '#':
-                    Console.WriteLine($"Final output: {_keyService.CurrentText} \n\n");
-                    _keyService.ProcessCleaning();
+                    ProcessEndInput();
                     return false;
 
                 case 'Q':
@@ -83,6 +77,23 @@ namespace OldPhone.ConsoleApp
                     _keyService.ProcessKey(key);
                     return false;
             }
+        }
+
+        private void ProcessOldPhonePadInput()
+        {
+            Console.WriteLine("Enter a string to process:");
+            var input = Console.ReadLine() ?? string.Empty;
+            var output = _keyService.Process(input);
+            Console.WriteLine($"OldPhonePad(\"{input}\") => output: {output} \n\n");
+            _keyService.ProcessCleaning();
+            DisplayCommands();
+        }
+
+        private void ProcessEndInput()
+        {
+            Console.WriteLine($"Final output: {_keyService.CurrentText} \n\n");
+            _keyService.ProcessCleaning();
+            DisplayCommands();
         }
 
     }
