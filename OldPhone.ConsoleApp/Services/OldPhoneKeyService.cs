@@ -40,8 +40,9 @@ namespace OldPhone.ConsoleApp.Services
                 switch (key)
                 {
                     case '#':
+                        var result = CurrentText;
                         ProcessComplete();
-                        break;
+                        return result;
 
                     case '*':
                         ProcessBackspace();
