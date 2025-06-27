@@ -5,11 +5,14 @@ I built this as a coding challenge to simulate the classic mobile phone keypad i
 
 ## What It Does
 
-- **Classic Keypad Feel**: Press '2' once for 'A', twice for 'B', three times for 'C'
-- **Interactive Console**: Type keys and see the text appear in real-time
-- **Batch Processing**: Test entire strings like "4433555 555666#" to get "HELLO"
-- **Timer Logic**: Wait 1 second and the character cycles automatically
-- **Backspace Support**: Press '*' to delete the last character
+- **Classic Keypad Feel**   : Press '2' once for 'A', twice for 'B', three times for 'C'
+- **Interactive Console**   : Type keys and see the text appear in real-time
+- **Batch Processing**      : Test entire strings like "4433555 555666#" to get "HELLO"
+- **Timer Logic**           : Wait 1 second and the character cycles automatically
+- **Backspace Support**     : Press '*' to delete the last character
+- **Smart Input Validation**: Only accepts valid phone keypad characters
+- **Dual Input Modes**      : Switch between single-key and string input modes
+- **Real-time Events**      : Watch text change as you type
 
 ## Quick Start
 
@@ -22,15 +25,20 @@ dotnet run --project OldPhone.ConsoleApp
 
 ## How to Use
 
-The app gives you a simple menu:
+The app gives you a simple menu with two input modes:
 
 ```
 *** Available Commands ***
-1-9/0: Input keys
+O: OldPhonePad(string input) - Default Mode
+S: Switch to Single Key Input Mode
+M: Display Commands
+Q: Quit
+
+1-9: Input keys
+0: Space
 *: Backspace
 #: End input
-O: OldPhonePad(string input)
-Q: Quit
+
 **************************
 ```
 
@@ -41,6 +49,20 @@ Q: Quit
 7: PQRS   8: TUV    9: WXYZ
 0: Space
 ```
+
+### Input Modes
+
+#### String Input Mode (Default)
+- Enter entire strings at once
+- Perfect for testing and batch processing
+- Invalid characters are automatically filtered out
+- Example: `"4433555 555666#"` → `"HELLO"`
+
+#### Single Key Input Mode
+- Press one key at a time
+- See real-time text updates
+- Invalid keys are ignored (no beep, just silent)
+- Great for interactive typing experience
 
 ### Examples
 
@@ -60,39 +82,62 @@ OldPhonePad("4433555 555666#") => "HELLO"
 OldPhonePad("8 88777444666*664#") => "TURING"
 ```
 
+#### Mode Switching
+- Type `S` to switch to single key mode
+- Type `O` to switch back to string mode
+- Type `M` to display commands again
+- Type `Q` to quit
+
 ## Project Structure
 
 ```
 OldPhone/
-├── OldPhone.ConsoleApp/     # Main app
-│   ├── Services/            # Business logic
-│   ├── KeyMap.cs            # Key mappings
-│   ├── OldPhoneApp.cs       # UI logic
-│   └── Program.cs           # Entry point
-├── OldPhone.Tests/          # Tests
-└── OldPhone.sln             # Solution
+├── OldPhone.ConsoleApp/                # Main application
+│   ├── Services/                       # Business logic & interfaces
+│   │   ├── IOldPhoneKeyService.cs
+│   │   └── OldPhoneKeyService.cs
+│   ├── PhoneCmdHelper.cs               # Input validation & helper
+│   ├── KeyMap.cs                       # Key mappings
+│   ├── Constants.cs                    # Configuration constants
+│   ├── OldPhoneApp.cs                  # UI logic & mode management
+│   └── Program.cs                      # Entry point
+├── OldPhone.Tests/                     # Comprehensive test suite
+│   └── OldPhoneKeyServiceTests.cs
+└── OldPhone.sln                        # Solution file
 ```
 
 ## What I Built
 
-- **Dependency injection** - Clean, testable architecture
-- **Event-driven updates** - Real-time text changes
-- **Timer management** - Proper resource disposal
-- **Docker containerization** - Production-ready deployment
+### Architecture & Design
+- **Dependency Injection**  : Clean, testable architecture with interfaces
+- **Event-Driven Updates**  : Real-time `TextChanged` and `TextCompleted` events
+- **Helper Classes**        : Reusable `PhoneCmdHelper` for input validation
+- **Regex Validation**      : Smart character filtering with `^[1-90*#MOQS\s]+$`
 
-**Code Quality:**
-- 57% test coverage (9 tests)
-- Null-safe operations
-- Proper error handling
-- Clean separation of concerns
+### Code Quality
+- **Comprehensive Testing** : 15+ unit tests covering main scenarios in core services
+- **Event Testing**         : Both `TextChanged` and `TextCompleted` events tested
+- **Input Validation**      : Prevents invalid characters from being entered
+- **Resource Management**   : Proper timer disposal and memory management
+
+### User Experience
+- **Smart Input Filtering** : Only valid characters accepted
+- **Real-time Feedback**    : See text changes as you type
+- **Mode Switching**        : Seamless transition between input modes
+- **Clear Commands**        : Easy-to-understand interface
 
 ## Running Tests
 
 ```bash
+# Run all tests
 dotnet test
+
+# Run with coverage (if available)
+dotnet test --collect:"XPlat Code Coverage"
 ```
 
-The tests cover the main functionality and lifecycle management. I focused on testing the core logic rather than the UI interactions.
+The tests cover the core logic but not the UI interactions
+I focused on testing the core logic.
 
 ## Docker (Optional)
 
