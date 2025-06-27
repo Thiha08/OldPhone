@@ -9,14 +9,17 @@ namespace OldPhone.ConsoleApp.Services
     {
         private readonly ReadOnlyDictionary<char, string> _keyMap;
         private readonly Timer _pauseTimer;
+        private readonly StringBuilder _textBuilder = new StringBuilder();
+
         private char _currentKey = '\0';
         private int _pressCount = 0;
-        private readonly StringBuilder _textBuilder = new StringBuilder();
         private bool _disposed = false;
 
-        public event Action<string> TextChanged = delegate { };
         public string CurrentText => _textBuilder.ToString();
 
+        public event Action<string> TextChanged = delegate { };
+        public event Action<string> TextCompleted = delegate { };
+        
         public OldPhoneKeyService()
         {
             _keyMap = KeyMap.GetDefaultKeyMap();
@@ -37,7 +40,8 @@ namespace OldPhone.ConsoleApp.Services
                 switch (key)
                 {
                     case '#':
-                        return CurrentText;
+                        ProcessComplete();
+                        break;
 
                     case '*':
                         ProcessBackspace();
@@ -99,6 +103,12 @@ namespace OldPhone.ConsoleApp.Services
         public void ProcessTimeout()
         {
             ResetCurrentKey();
+        }
+
+        public void ProcessComplete()
+        {
+            TextCompleted?.Invoke(CurrentText);
+            ProcessCleaning();
         }
 
         #region Private Methods  

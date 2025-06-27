@@ -6,6 +6,8 @@
 
         event Action<string> TextChanged;
 
+        event Action<string> TextCompleted;
+
         /// <summary>
         /// Coding Challenge: Implement the OldPhonePad method to simulate the old phone keypad input.
         /// </summary>
@@ -18,5 +20,7 @@
         void ProcessTimeout();
 
         void ProcessCleaning();
+
+        void ProcessComplete();
     }
 }
