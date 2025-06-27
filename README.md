@@ -18,7 +18,7 @@ I built this as a coding challenge to simulate the classic mobile phone keypad i
 
 ```bash
 # Clone and run
-git clone <your-repo>
+git clone https://github.com/Thiha08/OldPhone.git
 cd OldPhone
 dotnet run --project OldPhone.ConsoleApp
 ```
