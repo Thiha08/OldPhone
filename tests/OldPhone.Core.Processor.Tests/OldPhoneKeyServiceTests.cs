@@ -1,6 +1,6 @@
-using OldPhone.ConsoleApp.Services;
+using OldPhone.Core.Processor.Services;
 
-namespace OldPhone.Tests
+namespace OldPhone.Core.Processor.Tests
 {
     public class OldPhoneKeyServiceTests
     {

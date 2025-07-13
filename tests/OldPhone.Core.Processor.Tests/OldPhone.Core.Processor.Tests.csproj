@@ -15,11 +15,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Using Include="Xunit" />
+    <ProjectReference Include="..\..\src\OldPhone.Core.Processor\OldPhone.Core.Processor.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\OldPhone.ConsoleApp\OldPhone.ConsoleApp.csproj" />
+    <Using Include="Xunit" />
   </ItemGroup>
 
 </Project>
