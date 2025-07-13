@@ -8,18 +8,18 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0-alpine AS build
 WORKDIR /src
 
 # Copy project file first for better layer caching
-COPY OldPhone.ConsoleApp/OldPhone.ConsoleApp.csproj OldPhone.ConsoleApp/
+COPY src/OldPhone.UI.ConsoleApp/OldPhone.UI.ConsoleApp.csproj src/OldPhone.UI.ConsoleApp/
 COPY OldPhone.sln ./
 
 # Restore dependencies
-RUN dotnet restore "OldPhone.ConsoleApp/OldPhone.ConsoleApp.csproj"
+RUN dotnet restore "src/OldPhone.UI.ConsoleApp/OldPhone.UI.ConsoleApp.csproj"
 
 # Copy source code
 COPY . .
 
 # Build the application
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet build "OldPhone.ConsoleApp/OldPhone.ConsoleApp.csproj" \
+RUN dotnet build "src/OldPhone.UI.ConsoleApp/OldPhone.UI.ConsoleApp.csproj" \
     -c $BUILD_CONFIGURATION \
     -o /app/build \
     --no-restore
@@ -27,7 +27,7 @@ RUN dotnet build "OldPhone.ConsoleApp/OldPhone.ConsoleApp.csproj" \
 # Publish stage
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "OldPhone.ConsoleApp/OldPhone.ConsoleApp.csproj" \
+RUN dotnet publish "src/OldPhone.UI.ConsoleApp/OldPhone.UI.ConsoleApp.csproj" \
     -c $BUILD_CONFIGURATION \
     -o /app/publish \
     --no-restore \
@@ -53,4 +53,4 @@ RUN chown -R appuser:appgroup /app
 USER appuser
 
 # Set entry point
-ENTRYPOINT ["dotnet", "OldPhone.ConsoleApp.dll"]
+ENTRYPOINT ["dotnet", "OldPhone.UI.ConsoleApp.dll"]

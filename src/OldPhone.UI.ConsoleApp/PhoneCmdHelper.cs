@@ -1,7 +1,8 @@
-﻿using System.Text;
+﻿using OldPhone.Core.Processor;
+using System.Text;
 using System.Text.RegularExpressions;
 
-namespace OldPhone.ConsoleApp
+namespace OldPhone.UI.ConsoleApp
 {
     public static class PhoneCmdHelper
     {

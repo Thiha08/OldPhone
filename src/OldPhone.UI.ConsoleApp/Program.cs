@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using OldPhone.ConsoleApp.Services;
+using OldPhone.Core.Processor.Services;
 
-namespace OldPhone.ConsoleApp
+namespace OldPhone.UI.ConsoleApp
 {
     public class Program
     {

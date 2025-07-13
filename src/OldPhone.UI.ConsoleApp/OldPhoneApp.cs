@@ -1,6 +1,6 @@
-﻿using OldPhone.ConsoleApp.Services;
+﻿using OldPhone.Core.Processor.Services;
 
-namespace OldPhone.ConsoleApp
+namespace OldPhone.UI.ConsoleApp
 {
     public class OldPhoneApp
     {
