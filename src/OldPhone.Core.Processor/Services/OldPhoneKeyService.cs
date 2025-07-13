@@ -3,7 +3,7 @@ using System.Text;
 using System.Timers;
 using Timer = System.Timers.Timer;
 
-namespace OldPhone.ConsoleApp.Services
+namespace OldPhone.Core.Processor.Services
 {
     public class OldPhoneKeyService : IOldPhoneKeyService, IDisposable
     {

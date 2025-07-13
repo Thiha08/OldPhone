@@ -1,4 +1,4 @@
-﻿namespace OldPhone.ConsoleApp.Services
+﻿namespace OldPhone.Core.Processor.Services
 {
     public interface IOldPhoneKeyService : IDisposable
     {

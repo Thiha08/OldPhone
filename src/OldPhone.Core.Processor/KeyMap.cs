@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace OldPhone.ConsoleApp
+namespace OldPhone.Core.Processor
 {
     public static class KeyMap
     {
