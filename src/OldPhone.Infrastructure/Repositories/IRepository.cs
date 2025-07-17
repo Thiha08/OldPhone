@@ -42,12 +42,5 @@ namespace OldPhone.Infrastructure.Repositories
         /// <param name="id">The entity ID</param>
         /// <returns>True if deleted, false otherwise</returns>
         Task<bool> DeleteAsync(TKey id);
-
-        /// <summary>
-        /// Checks if an entity exists by its ID
-        /// </summary>
-        /// <param name="id">The entity ID</param>
-        /// <returns>True if exists, false otherwise</returns>
-        Task<bool> ExistsAsync(string id);
     }
 } 
