@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\OldPhone.Core.Shared\OldPhone.Core.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Redis\" />
   </ItemGroup>
 
