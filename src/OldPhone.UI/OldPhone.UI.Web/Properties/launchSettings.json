@@ -9,6 +9,43 @@
       }
     },
     "profiles": {
+      "OldPhone.UI.Web with Redis Docker Compose": {
+        "commandName": "Executable",
+        "executablePath": "docker-compose",
+        "commandLineArgs": "-f docker-compose.yml up --build",
+        "workingDirectory": "$(ProjectDir)",
+        "dotnetRunMessages": true,
+        "launchBrowser": true,
+        "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
+        "applicationUrl": "https://localhost:7209;http://localhost:5161",
+        "environmentVariables": {
+          "ASPNETCORE_ENVIRONMENT": "Development"
+        }
+      },
+     
+      "OldPhone.UI.Web with Docker Redis (Batch)": {
+        "commandName": "Executable",
+        "executablePath": "start-redis-and-web.bat",
+        "workingDirectory": "$(ProjectDir)../../../../",
+        "dotnetRunMessages": true,
+        "launchBrowser": true,
+        "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
+        "applicationUrl": "https://localhost:7209;http://localhost:5161",
+        "environmentVariables": {
+          "ASPNETCORE_ENVIRONMENT": "Development",
+          "RedisOptions__ConnectionString": "localhost:6379",
+          "RedisOptions__InstanceName": "OldPhone",
+          "RedisOptions__DatabaseNumber": "0"
+        }
+      },
+
+      "Run Redis Only Docker Compose (Dev)": {
+        "commandName": "Executable",
+        "executablePath": "docker-compose",
+        "commandLineArgs": "-f docker-compose.dev.yml up -d redis",
+        "workingDirectory": "$(ProjectDir)"
+      },
+
       "http": {
         "commandName": "Project",
         "dotnetRunMessages": true,

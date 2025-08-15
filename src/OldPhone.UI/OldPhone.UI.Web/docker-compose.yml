@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: oldphone-redis-dev
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    restart: unless-stopped
+    networks:
+      - oldphone-network
+
+  web:
+    build:
+      context: ../../../
+      dockerfile: src/OldPhone.UI/OldPhone.UI.Web/Dockerfile
+    container_name: oldphone-web-dev
+    ports:
+      - "5000:8080"
+      - "5001:8081"
+    depends_on:
+      - redis
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080;https://+:8081
+      - RedisOptions__ConnectionString=redis:6379
+      - RedisOptions__InstanceName=OldPhone
+      - RedisOptions__DatabaseNumber=0
+    restart: unless-stopped
+    networks:
+      - oldphone-network
+    volumes:
+      - ../../../src:/src:ro  # Mount source code for development
+
+volumes:
+  redis_data:
+
+networks:
+  oldphone-network:
+    driver: bridge 
