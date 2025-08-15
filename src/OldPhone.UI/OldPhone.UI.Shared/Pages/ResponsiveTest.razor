@@ -1,0 +1,211 @@
+@page "/responsive-test"
+@using global::OldPhone.UI.Shared.Services
+@inject IFormFactor FormFactor
+
+<PageTitle>Responsive Design Test</PageTitle>
+
+<div class="responsive-test-container">
+    <h2>OldPhone Responsive Design Test</h2>
+    
+    <div class="info-panel">
+        <h3>Current Device Information</h3>
+        <div class="info-grid">
+            <div class="info-item">
+                <strong>Form Factor:</strong> @_formFactor
+            </div>
+            <div class="info-item">
+                <strong>Platform:</strong> @_platform
+            </div>
+            <div class="info-item">
+                <strong>CSS Class:</strong> @GetResponsiveClass()
+            </div>
+            <div class="info-item">
+                <strong>Viewport:</strong> @_viewportWidth × @_viewportHeight
+            </div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h3>Form Factor Simulation</h3>
+        <div class="form-factor-buttons">
+            @foreach (var form in new[] { "phone", "tablet", "desktop", "tv", "watch", "web" })
+            {
+                <button class="test-btn" @onclick="() => SetFormFactor(form)">@form.ToUpperInvariant()</button>
+            }
+        </div>
+    </div>
+
+    <div class="phone-preview">
+        <h3>Phone Preview</h3>
+        <div class="phone-container @GetResponsiveClass()">
+            <div class="phone-background">
+                <img src="/_content/OldPhone.UI.Shared/img/old_phone.jpg" alt="Old Phone" class="phone-image" />
+            </div>
+            
+            <div class="phone-overlay">
+                <div class="connection-status">
+                    <span class="status-indicator connected"></span>
+                    <span class="status-text">Connected</span>
+                </div>
+
+                <div class="phone-display">
+                    <div class="lcd-screen has-content">
+                        <div class="lcd-text">Hello World! This is a test message to show how the LCD screen displays text across different form factors.</div>
+                    </div>
+                </div>
+
+                <div class="phone-keypad">
+                    <div class="keypad-row">
+                        <button class="phone-key">1</button>
+                        <button class="phone-key">2</button>
+                        <button class="phone-key">3</button>
+                    </div>
+                    <div class="keypad-row">
+                        <button class="phone-key">4</button>
+                        <button class="phone-key">5</button>
+                        <button class="phone-key">6</button>
+                    </div>
+                    <div class="keypad-row">
+                        <button class="phone-key">7</button>
+                        <button class="phone-key">8</button>
+                        <button class="phone-key">9</button>
+                    </div>
+                    <div class="keypad-row">
+                        <button class="phone-key">*</button>
+                        <button class="phone-key">0</button>
+                        <button class="phone-key">#</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="css-variables">
+        <h3>Current CSS Variables</h3>
+        <div class="variables-grid">
+            <div class="variable-item">
+                <strong>Container:</strong> @GetContainerSize()
+            </div>
+            <div class="variable-item">
+                <strong>LCD Screen:</strong> @GetLcdSize()
+            </div>
+            <div class="variable-item">
+                <strong>Button Size:</strong> @GetButtonSize()
+            </div>
+            <div class="variable-item">
+                <strong>Font Size:</strong> @GetFontSize()
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private string _formFactor = string.Empty;
+    private string _platform = string.Empty;
+    private string _viewportWidth = "Unknown";
+    private string _viewportHeight = "Unknown";
+
+    protected override void OnInitialized()
+    {
+        _formFactor = FormFactor.GetFormFactor();
+        _platform = FormFactor.GetPlatform();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await UpdateViewportSize();
+        }
+    }
+
+    private async Task UpdateViewportSize()
+    {
+        try
+        {
+            // This would need to be implemented with JavaScript interop
+            // For now, we'll use a placeholder
+            _viewportWidth = "Detecting...";
+            _viewportHeight = "Detecting...";
+            StateHasChanged();
+        }
+        catch
+        {
+            _viewportWidth = "Not available";
+            _viewportHeight = "Not available";
+        }
+    }
+
+    private void SetFormFactor(string formFactor)
+    {
+        _formFactor = formFactor;
+        StateHasChanged();
+    }
+
+    private string GetResponsiveClass()
+    {
+        return _formFactor.ToLowerInvariant() switch
+        {
+            "phone" => "phone-form-factor",
+            "tablet" => "tablet-form-factor",
+            "desktop" => "desktop-form-factor",
+            "tv" => "tv-form-factor",
+            "watch" => "watch-form-factor",
+            "webassembly" => "web-form-factor",
+            "web" => "web-form-factor",
+            _ => "default-form-factor"
+        };
+    }
+
+    private string GetContainerSize()
+    {
+        return _formFactor.ToLowerInvariant() switch
+        {
+            "phone" => "min(90vw, 300px) × min(80vh, 600px)",
+            "tablet" => "min(70vw, 450px) × min(85vh, 800px)",
+            "desktop" => "min(50vw, 500px) × min(90vh, 900px)",
+            "tv" => "min(40vw, 600px) × min(95vh, 1000px)",
+            "watch" => "min(95vw, 200px) × min(90vh, 300px)",
+            _ => "350px × 700px (default)"
+        };
+    }
+
+    private string GetLcdSize()
+    {
+        return _formFactor.ToLowerInvariant() switch
+        {
+            "phone" => "min(80vw, 140px) × min(15vh, 80px)",
+            "tablet" => "min(60vw, 220px) × min(12vh, 120px)",
+            "desktop" => "min(40vw, 250px) × min(10vh, 140px)",
+            "tv" => "min(30vw, 300px) × min(8vh, 160px)",
+            "watch" => "min(85vw, 120px) × min(20vh, 60px)",
+            _ => "170px × 100px (default)"
+        };
+    }
+
+    private string GetButtonSize()
+    {
+        return _formFactor.ToLowerInvariant() switch
+        {
+            "phone" => "min(12vw, 50px) × min(8vh, 30px)",
+            "tablet" => "min(10vw, 70px) × min(6vh, 40px)",
+            "desktop" => "min(8vw, 80px) × min(5vh, 45px)",
+            "tv" => "min(6vw, 100px) × min(4vh, 55px)",
+            "watch" => "min(15vw, 35px) × min(10vh, 25px)",
+            _ => "60px × 35px (default)"
+        };
+    }
+
+    private string GetFontSize()
+    {
+        return _formFactor.ToLowerInvariant() switch
+        {
+            "phone" => "14px base, 10px small, 12px error",
+            "tablet" => "18px base, 12px small, 16px error",
+            "desktop" => "20px base, 13px small, 18px error",
+            "tv" => "24px base, 16px small, 20px error",
+            "watch" => "12px base, 8px small, 10px error",
+            _ => "16px base, 11px small, 14px error (default)"
+        };
+    }
+} 

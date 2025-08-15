@@ -1,14 +1,12 @@
 ﻿@page "/"
-@using OldPhone.UI.Shared.Services
-@inject IFormFactor FormFactor
+@inject NavigationManager Navigation
 
-<PageTitle>Home</PageTitle>
-
-<h1>Hello, world!</h1>
-
-Welcome to your new app running on <em>@factor</em> using <em>@platform</em>.
+<PageTitle>OldPhone</PageTitle>
 
 @code {
-    private string factor => FormFactor.GetFormFactor();
-    private string platform => FormFactor.GetPlatform();
+    protected override void OnInitialized()
+    {
+        // Redirect to the OldPhone page
+        Navigation.NavigateTo("/oldphone");
+    }
 }

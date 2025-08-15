@@ -1,0 +1,223 @@
+﻿@page "/oldphone"
+@using Microsoft.Extensions.Logging
+@using global::OldPhone.UI.Shared.Services.SignalR
+@using global::OldPhone.UI.Shared.Services
+@using Microsoft.JSInterop
+@inject ISignalRPhoneService PhoneService
+@inject ILogger<OldPhone> Logger
+@inject IJSRuntime JS
+@inject IFormFactor FormFactor
+
+<PageTitle>OldPhone</PageTitle>
+
+<div class="phone-container">
+    <div class="phone-background">
+        <img src="/_content/OldPhone.UI.Shared/img/old_phone.jpg" alt="Old Phone" class="phone-image" />
+    </div>
+    
+    <div class="phone-overlay">
+        <div class="connection-status">
+            <span class="status-indicator @(PhoneService.IsConnected ? "connected" : "disconnected")"></span>
+            <span class="status-text">@(PhoneService.IsConnected ? "Connected" : "Disconnected")</span>
+        </div>
+
+        <div class="phone-display">
+            <div class="lcd-screen @(string.IsNullOrEmpty(PhoneService.CurrentText) ? "" : "has-content")">
+                <div class="lcd-text @(PhoneService.CurrentText?.Length > 50 ? "scrollable" : "")" @ref="lcdTextElement">@PhoneService.CurrentText</div>
+            </div>
+        </div>
+
+        <div class="phone-keypad">
+            <div class="keypad-row">
+                <button class="phone-key" @onclick="() => ProcessKey('1')"></button>
+                <button class="phone-key" @onclick="() => ProcessKey('2')"></button>
+                <button class="phone-key" @onclick="() => ProcessKey('3')"></button>
+            </div>
+            <div class="keypad-row">
+                <button class="phone-key" @onclick="() => ProcessKey('4')"></button>
+                <button class="phone-key" @onclick="() => ProcessKey('5')"></button>
+                <button class="phone-key" @onclick="() => ProcessKey('6')"></button>
+            </div>
+            <div class="keypad-row">
+                <button class="phone-key" @onclick="() => ProcessKey('7')"></button>
+                <button class="phone-key" @onclick="() => ProcessKey('8')"></button>
+                <button class="phone-key" @onclick="() => ProcessKey('9')"></button>
+            </div>
+            <div class="keypad-row">
+                <button class="phone-key" @onclick="() => ProcessKey('*')"></button>
+                <button class="phone-key" @onclick="() => ProcessKey('0')"></button>
+                <button class="phone-key" @onclick="() => ProcessKey('#')"></button>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrEmpty(_errorMessage))
+        {
+            <div class="error-message">
+                @_errorMessage
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+
+    private string _errorMessage = string.Empty;
+    private ElementReference lcdTextElement;
+    private static OldPhone _currentInstance;
+    private string _formFactor = string.Empty;
+    private string _platform = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Get form factor and platform information
+        _formFactor = FormFactor.GetFormFactor();
+        _platform = FormFactor.GetPlatform();
+
+        await PhoneService.ConnectAsync();
+
+        // Subscribe to events
+        PhoneService.TextChanged += OnTextChanged;
+        PhoneService.TextCompleted += OnTextCompleted;
+        PhoneService.TextCleared += OnTextCleared;
+        PhoneService.ErrorOccurred += OnErrorOccurred;
+        PhoneService.ConnectionStatusChanged += OnConnectionStatusChanged;
+        
+        // Set the current instance for keyboard handling
+        _currentInstance = this;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("addKeyboardListener");
+        }
+    }
+
+    private async Task ProcessKey(char key)
+    {
+        try
+        {
+            _errorMessage = string.Empty;
+            await PhoneService.ProcessKeyAsync(key.ToString());
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error processing key: {Key}", key);
+            _errorMessage = $"Error processing key: {ex.Message}";
+            StateHasChanged();
+        }
+    }
+
+    private async Task Forward()
+    {
+        try
+        {
+            _errorMessage = string.Empty;
+            await PhoneService.ForwardAsync();
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error clearing text");
+            _errorMessage = $"Error clearing text: {ex.Message}";
+            StateHasChanged();
+        }
+    }
+
+    private async Task Backward()
+    {
+        try
+        {
+            _errorMessage = string.Empty;
+            await PhoneService.BackwardAsync();
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error sending text");
+            _errorMessage = $"Error sending text: {ex.Message}";
+            StateHasChanged();
+        }
+    }
+
+    private void OnTextChanged(string text)
+    {
+        InvokeAsync(async () =>
+        {
+            StateHasChanged();
+            await AutoScrollToBottom();
+        });
+    }
+
+    private async Task AutoScrollToBottom()
+    {
+        try
+        {
+            await JS.InvokeVoidAsync("scrollToBottom", lcdTextElement);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error auto-scrolling to bottom");
+        }
+    }
+
+    private void OnTextCompleted(string text)
+    {
+        InvokeAsync(() =>
+        {
+            Logger.LogInformation("Text completed: {Text}", text);
+            StateHasChanged();
+        });
+    }
+
+    private void OnTextCleared()
+    {
+        InvokeAsync(() =>
+        {
+            StateHasChanged();
+        });
+    }
+
+    private void OnErrorOccurred(string error)
+    {
+        InvokeAsync(() =>
+        {
+            _errorMessage = error;
+            StateHasChanged();
+        });
+    }
+
+    private void OnConnectionStatusChanged(bool isConnected)
+    {
+        InvokeAsync(() =>
+        {
+            Logger.LogInformation("Connection status changed: {IsConnected}", isConnected);
+            StateHasChanged();
+        });
+    }
+
+    public void Dispose()
+    {
+        // Unsubscribe from events
+        PhoneService.TextChanged -= OnTextChanged;
+        PhoneService.TextCompleted -= OnTextCompleted;
+        PhoneService.TextCleared -= OnTextCleared;
+        PhoneService.ErrorOccurred -= OnErrorOccurred;
+        PhoneService.ConnectionStatusChanged -= OnConnectionStatusChanged;
+        
+        // Clear the static reference
+        if (_currentInstance == this)
+        {
+            _currentInstance = null;
+        }
+    }
+
+    [JSInvokable]
+    public static async Task ProcessKeyboardKey(string key)
+    {
+        // This static method is called from JavaScript
+        if (_currentInstance != null)
+        {
+            await _currentInstance.ProcessKey(key[0]);
+        }
+    }
+}
